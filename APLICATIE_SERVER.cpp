@@ -28,6 +28,7 @@ void Sistemul_Central(void*);
 
 void mersul_trenurilor(char* locatie);
 void deplasari_curente(char* locatie, int location);
+void deplasari_via(char* locatie, int location, char* via);
 int check_parola(char* parola);
 int modificare_planificare(char* nr_tren, char* tip_modificare, char* minute);
 
@@ -217,6 +218,138 @@ void Sistemul_Central(void *arg)
                 break;
             }
             pthread_mutex_unlock(&MUTEX); 
+        }
+        else if(strcmp(mesaj_primit, "plecari_spre")==0)
+        {
+            strcpy(mesaj_trimis, "Furnizati statia: ");
+            lungime_msj_trimis = strlen(mesaj_trimis);
+            int trimitere_lungime_msj_trimis = write(client, &lungime_msj_trimis, sizeof(int));
+            if(trimitere_lungime_msj_trimis==-1)
+            {
+                perror("EROARE la scriere\n");
+                break;
+            }
+            int trimitere_msj_trimis = write(client, mesaj_trimis, strlen(mesaj_trimis));
+            if(trimitere_msj_trimis==-1)
+            {
+                perror("EROARE la scriere mesaj\n");
+                break;
+            }
+            terminat_comanda = 0;
+            int finish_comanda = write(client, &terminat_comanda, sizeof(terminat_comanda));
+            if(finish_comanda==-1)
+            {
+                perror("EROARE la scriere mesaj\n");
+                break;
+            }
+            bzero(&terminat_comanda, sizeof(int));
+            bzero(&lungime_msj_primit, sizeof(int));
+            bzero(&lungime_msj_trimis, sizeof(int));
+            bzero(mesaj_primit, 256);
+            bzero(mesaj_trimis, 8196);
+            int citire_lungime = read(client, &lungime_msj_primit, sizeof(int));
+            if(citire_lungime==-1)
+            {
+                perror("EROARE la citire\n");
+                break;
+            }
+            int citire_mesaj_primit = read(client, mesaj_primit, lungime_msj_primit);
+            if(citire_mesaj_primit==-1)
+            {
+                perror("EROARE la citire mesaj\n");
+                break;
+            }
+            char rezulate[8196];
+            pthread_mutex_lock(&MUTEX);
+            deplasari_via(rezulate, 1, mesaj_primit);
+            strcpy(mesaj_trimis, rezulate);
+            pthread_mutex_unlock(&MUTEX);
+            lungime_msj_trimis =strlen(mesaj_trimis);
+            trimitere_lungime_msj_trimis = write(client, &lungime_msj_trimis, sizeof(int));
+            if(trimitere_lungime_msj_trimis==-1)
+            {
+                perror("EROARE la scriere\n");
+                break;
+            }
+            trimitere_msj_trimis = write(client, mesaj_trimis, strlen(mesaj_trimis));
+            if(trimitere_msj_trimis==-1)
+            {
+                perror("EROARE la scriere mesaj\n");
+                break;
+            }
+            terminat_comanda = 1;
+            finish_comanda = write(client, &terminat_comanda, sizeof(terminat_comanda));
+            if(finish_comanda==-1)
+            {
+                perror("EROARE la scriere mesaj\n");
+                break;
+            }
+        }
+        else if(strcmp(mesaj_primit, "sosiri_dinspre")==0)
+        {
+            strcpy(mesaj_trimis, "Furnizati statia: ");
+            lungime_msj_trimis = strlen(mesaj_trimis);
+            int trimitere_lungime_msj_trimis = write(client, &lungime_msj_trimis, sizeof(int));
+            if(trimitere_lungime_msj_trimis==-1)
+            {
+                perror("EROARE la scriere\n");
+                break;
+            }
+            int trimitere_msj_trimis = write(client, mesaj_trimis, strlen(mesaj_trimis));
+            if(trimitere_msj_trimis==-1)
+            {
+                perror("EROARE la scriere mesaj\n");
+                break;
+            }
+            terminat_comanda = 0;
+            int finish_comanda = write(client, &terminat_comanda, sizeof(terminat_comanda));
+            if(finish_comanda==-1)
+            {
+                perror("EROARE la scriere mesaj\n");
+                break;
+            }
+            bzero(&terminat_comanda, sizeof(int));
+            bzero(&lungime_msj_primit, sizeof(int));
+            bzero(&lungime_msj_trimis, sizeof(int));
+            bzero(mesaj_primit, 256);
+            bzero(mesaj_trimis, 8196);
+            int citire_lungime = read(client, &lungime_msj_primit, sizeof(int));
+            if(citire_lungime==-1)
+            {
+                perror("EROARE la citire\n");
+                break;
+            }
+            int citire_mesaj_primit = read(client, mesaj_primit, lungime_msj_primit);
+            if(citire_mesaj_primit==-1)
+            {
+                perror("EROARE la citire mesaj\n");
+                break;
+            }
+            char rezulate[8196];
+            pthread_mutex_lock(&MUTEX);
+            deplasari_via(rezulate, 0, mesaj_primit);
+            strcpy(mesaj_trimis, rezulate);
+            pthread_mutex_lock(&MUTEX);
+            lungime_msj_trimis =strlen(mesaj_trimis);
+            trimitere_lungime_msj_trimis = write(client, &lungime_msj_trimis, sizeof(int));
+            if(trimitere_lungime_msj_trimis==-1)
+            {
+                perror("EROARE la scriere\n");
+                break;
+            }
+            trimitere_msj_trimis = write(client, mesaj_trimis, strlen(mesaj_trimis));
+            if(trimitere_msj_trimis==-1)
+            {
+                perror("EROARE la scriere mesaj\n");
+                break;
+            }
+            terminat_comanda = 1;
+            finish_comanda = write(client, &terminat_comanda, sizeof(terminat_comanda));
+            if(finish_comanda==-1)
+            {
+                perror("EROARE la scriere mesaj\n");
+                break;
+            }
         }
         else if(strcmp(mesaj_primit, "actualizare")==0)
         {
@@ -533,7 +666,7 @@ void Sistemul_Central(void *arg)
         }
         else
         {
-            char raspuns[] = "comanda_gresita\n";
+            char raspuns[] = "Comanda furnizata nu este corecta!\n";
             lungime_msj_trimis = strlen(raspuns);
             int trimitere_lungime_msj_trimis = write(client, &lungime_msj_trimis, sizeof(int));
             if(trimitere_lungime_msj_trimis==-1)
@@ -892,6 +1025,182 @@ void deplasari_curente(char* locatie, int location)
                 }
                 strcat(rezultat, "\n");
             }
+        }
+        strcpy(locatie, rezultat);
+    }
+}
+
+void deplasari_via(char* locatie, int location, char* via)
+{
+    char rezultat[8196];
+    bzero(rezultat, 8196);
+    pugi::xml_document tabela;
+    pugi::xml_parse_result actual = tabela.load_file("Planificare_tren.xml");
+    if(location == 1) //plecari
+    {
+        cout<<"HELI"<<endl;
+        for(int i = 0; i<21; i++)
+        {
+            strcat(rezultat, "=");
+        }
+        strcat(rezultat, "==PLECARI=SPRE====");
+        for(int i = 0; i<21; i++)
+        {
+            strcat(rezultat, "=");
+        }
+        strcat(rezultat, "\n");
+        strcat(rezultat, "NUMAR");
+        for(int i = 0; i<(8-5); i++)
+        {
+            strcat(rezultat, " ");
+        }
+        strcat(rezultat, "DIRECTIE");
+        for(int i = 0; i<(20-8); i++)
+        {
+            strcat(rezultat, " ");
+        }
+        strcat(rezultat, "ORA");
+        for(int i = 0; i<(8-3); i++)
+        {
+            strcat(rezultat, " ");
+        }
+        strcat(rezultat, "MENTIUNI");
+        for(int i = 0; i<(24-8); i++)
+        {
+            strcat(rezultat, " ");
+        }
+        strcat(rezultat, "\n");
+        for(int i = 0; i<60; i++)
+        {
+            strcat(rezultat, "*");
+        }
+        strcat(rezultat, "\n");
+        for(pugi::xml_node tren = tabela.child("TABELA").child("PLECARI").first_child(); tren; tren = tren.next_sibling())
+        {
+                for(pugi::xml_node station = tren.child("STATII").child("GARA"); station; station=station.next_sibling())
+                {
+                    if(strcmp(via, station.attribute("gara").value())==0)
+                    {
+                        char numar[10];
+                        strcpy(numar, tren.child("NUMAR").attribute("nr").value());
+                        strcat(rezultat, numar);
+                        int lungime = strlen(numar);
+                        for(int i=0; i<(8-lungime); i++)
+                        {
+                            strcat(rezultat, " ");
+                        }
+                        char directie[50];
+                        strcpy(directie, tren.child("DESTINATIE").attribute("dest").value());
+                        lungime = strlen(directie);
+                        strcat(rezultat, directie);
+                        for(int i=0; i<(20-lungime); i++)
+                        {
+                            strcat(rezultat, " ");
+                        }
+                        char ora[10];
+                        strcpy(ora, tren.child("ORA").attribute("h").value());
+                        lungime = strlen(ora);
+                        strcat(rezultat, ora);
+                        for(int i=0; i<(8-lungime); i++)
+                        {
+                            strcat(rezultat, " ");
+                        }
+                        char mentiuni[50];
+                        strcpy(mentiuni, tren.child("MENTIUNI").attribute("ment").value());
+                        lungime = strlen(mentiuni);
+                        strcat(rezultat, mentiuni);
+                        for(int i=0; i<(24-lungime); i++)
+                        {
+                            strcat(rezultat, " ");
+                        }
+                        strcat(rezultat, "\n");
+                        break;
+                    }
+                }
+        }
+        strcpy(locatie, rezultat);
+    }
+    else//sosiri
+    {
+        cout<<"HELI"<<endl;
+        for(int i = 0; i<21; i++)
+        {
+            strcat(rezultat, "=");
+        }
+        strcat(rezultat, "==SOSIRI=DINSPRE==");
+        for(int i = 0; i<21; i++)
+        {
+            strcat(rezultat, "=");
+        }
+        strcat(rezultat, "\n");
+        strcat(rezultat, "NUMAR");
+        for(int i = 0; i<(8-5); i++)
+        {
+            strcat(rezultat, " ");
+        }
+        strcat(rezultat, "DIRECTIE");
+        for(int i = 0; i<(20-8); i++)
+        {
+            strcat(rezultat, " ");
+        }
+        strcat(rezultat, "ORA");
+        for(int i = 0; i<(8-3); i++)
+        {
+            strcat(rezultat, " ");
+        }
+        strcat(rezultat, "MENTIUNI");
+        for(int i = 0; i<(24-8); i++)
+        {
+            strcat(rezultat, " ");
+        }
+        strcat(rezultat, "\n");
+        for(int i = 0; i<60; i++)
+        {
+            strcat(rezultat, "*");
+        }
+        strcat(rezultat, "\n");
+        for(pugi::xml_node tren = tabela.child("TABELA").child("SOSIRI").first_child(); tren; tren = tren.next_sibling())
+        {
+                for(pugi::xml_node station = tren.child("STATII").child("GARA"); station; station=station.next_sibling())
+                {
+                    if(strcmp(via, station.attribute("gara").value())==0)
+                    {
+                        char numar[10];
+                        strcpy(numar, tren.child("NUMAR").attribute("nr").value());
+                        strcat(rezultat, numar);
+                        int lungime = strlen(numar);
+                        for(int i=0; i<(8-lungime); i++)
+                        {
+                            strcat(rezultat, " ");
+                        }
+                        char directie[50];
+                        strcpy(directie, tren.child("DESTINATIE").attribute("dest").value());
+                        lungime = strlen(directie);
+                        strcat(rezultat, directie);
+                        for(int i=0; i<(20-lungime); i++)
+                        {
+                            strcat(rezultat, " ");
+                        }
+                        char ora[10];
+                        strcpy(ora, tren.child("ORA").attribute("h").value());
+                        lungime = strlen(ora);
+                        strcat(rezultat, ora);
+                        for(int i=0; i<(8-lungime); i++)
+                        {
+                            strcat(rezultat, " ");
+                        }
+                        char mentiuni[50];
+                        strcpy(mentiuni, tren.child("MENTIUNI").attribute("ment").value());
+                        lungime = strlen(mentiuni);
+                        strcat(rezultat, mentiuni);
+                        for(int i=0; i<(24-lungime); i++)
+                        {
+                            strcat(rezultat, " ");
+                        }
+                        strcat(rezultat, "\n");
+                        break;
+                    }
+                }
         }
         strcpy(locatie, rezultat);
     }
