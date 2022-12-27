@@ -42,12 +42,12 @@ int main()
         perror("Eroare la relizarea conexiunii din partea clientului \n");
         return errno;
     }
-
+    cout<<"==================MERSUL====TRENURILOR======================"<<endl;
     while(1)
     {
         rezolvare_comanda=RUNNING;
-
-        cout<<"==============MERSUL====TRENURILOR==============="<<endl;
+        bzero(stocare_mesaj_client, 60);
+        bzero(mesaj_primit, 8192);
 
         cout<<"Introduceti comanda: ";
         cin>>stocare_mesaj_client;
@@ -113,7 +113,7 @@ int main()
             {
                 cout<<mesaj_primit;
                 //afisez rezultatul
-                if(strcmp(mesaj_primit, "END_CONNEX")==0)
+                if(strcmp(mesaj_primit, "END_CONNEX\n")==0)
                 {
                     end_connex=1;
                 }
@@ -126,7 +126,11 @@ int main()
                 //ca sa iesim din bucla rezolvare_comanda==RUNNING
             }
         }
-        cout<<"====================================="<<endl;
+        for(int i=0; i<60; i++)
+        {
+            cout<<"=";
+        }
+        cout<<endl;
         if(end_connex==1)
         {
             break;

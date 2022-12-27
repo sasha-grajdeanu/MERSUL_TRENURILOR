@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<TABELA>
+	<PLECARI>
+		<TREN>
+			<NUMAR nr="5401" />
+			<DESTINATIE dest="Pascani" />
+			<ORA h="05:34" />
+			<MENTIUNI ment="Conform cu planul" />
+		</TREN>
+		<TREN>
+			<NUMAR nr="5412" />
+			<DESTINATIE dest="Adjud" />
+			<ORA h="07:30" />
+			<MENTIUNI ment="Conform cu planul" />
+		</TREN>
+		<TREN>
+			<NUMAR nr="5411" />
+			<DESTINATIE dest="Pascani" />
+			<ORA h="08:35" />
+			<MENTIUNI ment="Conform cu planul" />
+		</TREN>
+		<TREN>
+			<NUMAR nr="5423" />
+			<DESTINATIE dest="Bacau" />
+			<ORA h="10:45" />
+			<MENTIUNI ment="Conform cu planul" />
+		</TREN>
+		<TREN>
+			<NUMAR nr="5414" />
+			<DESTINATIE dest="Adjud" />
+			<ORA h="14:23" />
+			<MENTIUNI ment="Conform cu planul" />
+		</TREN>
+		<TREN>
+			<NUMAR nr="5413" />
+			<DESTINATIE dest="Pascani" />
+			<ORA h="15:24" />
+			<MENTIUNI ment="Intarziere: 3 minute." />
+		</TREN>
+		<TREN>
+			<NUMAR nr="5404" />
+			<DESTINATIE dest="Marasesti" />
+			<ORA h="17:07" />
+			<MENTIUNI ment="Conform cu planul" />
+		</TREN>
+		<TREN>
+			<NUMAR nr="5405" />
+			<DESTINATIE dest="Pascani" />
+			<ORA h="19:42" />
+			<MENTIUNI ment="Conform cu planul" />
+		</TREN>
+		<TREN>
+			<NUMAR nr="5406" />
+			<DESTINATIE dest="Marasesti" />
+			<ORA h="21:23" />
+			<MENTIUNI ment="Conform cu planul" />
+		</TREN>
+	</PLECARI>
+	<SOSIRI>
+		<TREN>
+			<NUMAR nr="5401" />
+			<DESTINATIE dest="Marasesti" />
+			<ORA h="05:33" />
+			<MENTIUNI ment="Conform cu planul" />
+		</TREN>
+		<TREN>
+			<NUMAR nr="5412" />
+			<DESTINATIE dest="Pascani" />
+			<ORA h="07:29" />
+			<MENTIUNI ment="Conform cu planul" />
+		</TREN>
+		<TREN>
+			<NUMAR nr="5411" />
+			<DESTINATIE dest="Adjud" />
+			<ORA h="08:34" />
+			<MENTIUNI ment="Conform cu planul" />
+		</TREN>
+		<TREN>
+			<NUMAR nr="5418" />
+			<DESTINATIE dest="Bacau" />
+			<ORA h="10:35" />
+			<MENTIUNI ment="Conform cu planul" />
+		</TREN>
+		<TREN>
+			<NUMAR nr="5414" />
+			<DESTINATIE dest="Bacau" />
+			<ORA h="14:22" />
+			<MENTIUNI ment="Conform cu planul" />
+		</TREN>
+		<TREN>
+			<NUMAR nr="5413" />
+			<DESTINATIE dest="Adjud" />
+			<ORA h="15:23" />
+			<MENTIUNI ment="Intarziere: 3 minute." />
+		</TREN>
+		<TREN>
+			<NUMAR nr="5404" />
+			<DESTINATIE dest="Pascani" />
+			<ORA h="17:06" />
+			<MENTIUNI ment="Conform cu planul" />
+		</TREN>
+		<TREN>
+			<NUMAR nr="5405" />
+			<DESTINATIE dest="Marasesti" />
+			<ORA h="19:41" />
+			<MENTIUNI ment="Conform cu planul" />
+		</TREN>
+		<TREN>
+			<NUMAR nr="5406" />
+			<DESTINATIE dest="Pascani" />
+			<ORA h="21:22" />
+			<MENTIUNI ment="Conform cu planul" />
+		</TREN>
+	</SOSIRI>
+</TABELA>
