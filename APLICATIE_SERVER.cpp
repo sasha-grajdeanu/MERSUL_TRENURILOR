@@ -14,11 +14,6 @@
 #define PORT 2504
 using namespace std;
 
-typedef struct thread_data
-{
-    int id_thread;
-    int client;
-}thread_data;
 
 pthread_mutex_t MUTEX=PTHREAD_MUTEX_INITIALIZER;
 
@@ -32,12 +27,30 @@ void deplasari_via(char* locatie, int location, char* via);
 int check_parola(char* parola);
 int modificare_planificare(char* nr_tren, char* tip_modificare, char* minute);
 
+void resetare_baza_de_date()
+{
+    pugi::xml_document tabela;
+    pugi::xml_parse_result resultat = tabela.load_file("Planificare_tren.xml");
+    for(pugi::xml_node nod = tabela.child("TABELA").child("PLECARI").first_child(); nod; nod = nod.next_sibling())
+    {
+        char reset[] = "Conform cu planul";
+        nod.child("MENTIUNI").attribute("ment").set_value(reset);
+    }
+    for(pugi::xml_node nod = tabela.child("TABELA").child("SOSIRI").first_child(); nod; nod = nod.next_sibling())
+    {
+        char reset[] = "Conform cu planul";
+        nod.child("MENTIUNI").attribute("ment").set_value(reset);
+    }
+    tabela.save_file("Planificare_tren.xml");
+}
+
 int main()
 {
+    resetare_baza_de_date();
     int socket_principal;
     struct sockaddr_in Server_Zentral;
     struct sockaddr_in per_client;
-    pthread_t MULTIME;
+    pthread_t MULTIME[100];
     int i=0;
 
     if((socket_principal = socket(AF_INET, SOCK_STREAM, 0))==-1)
@@ -68,19 +81,15 @@ int main()
 
     while(1)
     {
-        printf("SA VINA pe portu %d\n", PORT);
         int clientela;
-        thread_data* fir;
         socklen_t lungime = sizeof(per_client);
         if((clientela = accept(socket_principal, (struct sockaddr*) &per_client, &lungime))<0)
         {
             perror ("server | eroare la accept\n");
             continue;
         }
-        fir = (struct thread_data*)malloc(sizeof(struct thread_data*));
-        fir ->id_thread = i;
-        fir ->client = clientela;
-        pthread_create(&MULTIME, NULL, &tratare, fir);
+        pthread_create(&MULTIME[i], NULL, &tratare, &clientela);
+        cout<<"thread "<<i<<" creat"<<endl;
         i++;
     }
     return 0;
@@ -88,21 +97,15 @@ int main()
 
 static void *tratare (void * arg)
 {
-    struct thread_data fire;
-    fire = *((struct thread_data*)arg);
-    printf("threadul %d asteapta mesaj\n",fire.id_thread);
     pthread_detach(pthread_self());
-    Sistemul_Central((struct thread_data*)arg);
+    Sistemul_Central((int*)arg);
     printf("Inchis thread\n");
-    close((intptr_t)arg);
     return NULL;
 };
 
 void Sistemul_Central(void *arg)
 {
-    struct thread_data firisor;
-    firisor = *((struct thread_data*)arg);
-    int client = firisor.client;
+    int client = *((int*)arg);
     int terminat_comanda;
     int lungime_msj_primit;
     int lungime_msj_trimis;
@@ -135,7 +138,6 @@ void Sistemul_Central(void *arg)
             char rezultat_parsare[8196];
             bzero(rezultat_parsare, 8196);
             mersul_trenurilor(rezultat_parsare);
-            cout<<rezultat_parsare;
             strcpy(mesaj_trimis, rezultat_parsare);
             lungime_msj_trimis =strlen(mesaj_trimis);
             int trimitere_lungime_msj_trimis = write(client, &lungime_msj_trimis, sizeof(int));
@@ -329,7 +331,7 @@ void Sistemul_Central(void *arg)
             pthread_mutex_lock(&MUTEX);
             deplasari_via(rezulate, 0, mesaj_primit);
             strcpy(mesaj_trimis, rezulate);
-            pthread_mutex_lock(&MUTEX);
+            pthread_mutex_unlock(&MUTEX);
             lungime_msj_trimis =strlen(mesaj_trimis);
             trimitere_lungime_msj_trimis = write(client, &lungime_msj_trimis, sizeof(int));
             if(trimitere_lungime_msj_trimis==-1)
@@ -394,7 +396,7 @@ void Sistemul_Central(void *arg)
             int corect = check_parola(mesaj_primit);
             if(corect==0)
             {
-                char raspuns[] = "PAROLA INCORECTA! ACCES INTERZIS.";
+                char raspuns[] = "PAROLA INCORECTA! ACCES INTERZIS.\n";
                 lungime_msj_trimis = strlen(raspuns);
                 int trimitere_lungime_msj_trimis = write(client, &lungime_msj_trimis, sizeof(int));
                 if(trimitere_lungime_msj_trimis==-1)
@@ -542,7 +544,7 @@ void Sistemul_Central(void *arg)
                 int modification = modificare_planificare(nr_tren, tip_modificare, minute);
                 if(modification == -1)//nr tren gresit/neexistent
                 {
-                    strcpy(mesaj_trimis, "Nu exista tren cu acest numar\n.");
+                    strcpy(mesaj_trimis, "Nu exista tren cu acest numar.\n");
                     lungime_msj_trimis = strlen(mesaj_trimis);
                     trimitere_lungime_msj_trimis = write(client, &lungime_msj_trimis, sizeof(int));
                     if(trimitere_lungime_msj_trimis==-1)
@@ -636,8 +638,8 @@ void Sistemul_Central(void *arg)
                         break;
                     }
                 }
-                pthread_mutex_unlock(&MUTEX);
             }
+            pthread_mutex_unlock(&MUTEX);
         }
         else if(strcmp(mesaj_primit, "end_connex")==0)
         {
@@ -699,7 +701,6 @@ void mersul_trenurilor(char* locatie)
     bzero(rezultat, 8196);
     pugi::xml_document tabela;
     pugi::xml_parse_result actual = tabela.load_file("Planificare_tren.xml");
-    cout<<"HELI"<<endl;
     for(int i = 0; i<26; i++)
     {
         strcat(rezultat, "=");
@@ -870,7 +871,6 @@ void deplasari_curente(char* locatie, int location)
     pugi::xml_parse_result actual = tabela.load_file("Planificare_tren.xml");
     if(location == 1) //plecari
     {
-        cout<<"HELI"<<endl;
         for(int i = 0; i<21; i++)
         {
             strcat(rezultat, "=");
@@ -950,7 +950,6 @@ void deplasari_curente(char* locatie, int location)
     }
     else//sosiri
     {
-        cout<<"HELI"<<endl;
         for(int i = 0; i<21; i++)
         {
             strcat(rezultat, "=");
@@ -1038,7 +1037,6 @@ void deplasari_via(char* locatie, int location, char* via)
     pugi::xml_parse_result actual = tabela.load_file("Planificare_tren.xml");
     if(location == 1) //plecari
     {
-        cout<<"HELI"<<endl;
         for(int i = 0; i<21; i++)
         {
             strcat(rezultat, "=");
@@ -1122,7 +1120,6 @@ void deplasari_via(char* locatie, int location, char* via)
     }
     else//sosiri
     {
-        cout<<"HELI"<<endl;
         for(int i = 0; i<21; i++)
         {
             strcat(rezultat, "=");

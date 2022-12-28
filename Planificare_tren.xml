@@ -7,15 +7,15 @@
 			<ORA h="05:34" />
 			<MENTIUNI ment="Conform cu planul" />
 			<STATII>
-				<GARA gara="Orbeni"/>
-				<GARA gara="Racaciuni"/>
-				<GARA gara="Faraoani"/>
-				<GARA gara="Bacau"/>
-				<GARA gara="Galbeni"/>
-				<GARA gara="Roman"/>
-				<GARA gara="Sabaoani"/>
-				<GARA gara="Mircesti"/>
-				<GARA gara="Pascani"/>
+				<GARA gara="Orbeni" />
+				<GARA gara="Racaciuni" />
+				<GARA gara="Faraoani" />
+				<GARA gara="Bacau" />
+				<GARA gara="Galbeni" />
+				<GARA gara="Roman" />
+				<GARA gara="Sabaoani" />
+				<GARA gara="Mircesti" />
+				<GARA gara="Pascani" />
 			</STATII>
 		</TREN>
 		<TREN>
@@ -24,7 +24,7 @@
 			<ORA h="07:30" />
 			<MENTIUNI ment="Conform cu planul" />
 			<STATII>
-				<GARA gara="Adjud"/>
+				<GARA gara="Adjud" />
 			</STATII>
 		</TREN>
 		<TREN>
@@ -33,15 +33,15 @@
 			<ORA h="08:35" />
 			<MENTIUNI ment="Conform cu planul" />
 			<STATII>
-				<GARA gara="Orbeni"/>
-				<GARA gara="Racaciuni"/>
-				<GARA gara="Faraoani"/>
-				<GARA gara="Bacau"/>
-				<GARA gara="Galbeni"/>
-				<GARA gara="Roman"/>
-				<GARA gara="Sabaoani"/>
-				<GARA gara="Mircesti"/>
-				<GARA gara="Pascani"/>
+				<GARA gara="Orbeni" />
+				<GARA gara="Racaciuni" />
+				<GARA gara="Faraoani" />
+				<GARA gara="Bacau" />
+				<GARA gara="Galbeni" />
+				<GARA gara="Roman" />
+				<GARA gara="Sabaoani" />
+				<GARA gara="Mircesti" />
+				<GARA gara="Pascani" />
 			</STATII>
 		</TREN>
 		<TREN>
@@ -50,10 +50,10 @@
 			<ORA h="10:45" />
 			<MENTIUNI ment="Conform cu planul" />
 			<STATII>
-				<GARA gara="Orbeni"/>
-				<GARA gara="Racaciuni"/>
-				<GARA gara="Faraoani"/>
-				<GARA gara="Bacau"/>
+				<GARA gara="Orbeni" />
+				<GARA gara="Racaciuni" />
+				<GARA gara="Faraoani" />
+				<GARA gara="Bacau" />
 			</STATII>
 		</TREN>
 		<TREN>
@@ -62,24 +62,24 @@
 			<ORA h="14:23" />
 			<MENTIUNI ment="Conform cu planul" />
 			<STATII>
-				<GARA gara="Adjud"/>
+				<GARA gara="Adjud" />
 			</STATII>
 		</TREN>
 		<TREN>
 			<NUMAR nr="5413" />
 			<DESTINATIE dest="Pascani" />
 			<ORA h="15:24" />
-			<MENTIUNI ment="Intarziere: 3 minute." />
+			<MENTIUNI ment="Conform cu planul" />
 			<STATII>
-				<GARA gara="Orbeni"/>
-				<GARA gara="Racaciuni"/>
-				<GARA gara="Faraoani"/>
-				<GARA gara="Bacau"/>
-				<GARA gara="Galbeni"/>
-				<GARA gara="Roman"/>
-				<GARA gara="Sabaoani"/>
-				<GARA gara="Mircesti"/>
-				<GARA gara="Pascani"/>
+				<GARA gara="Orbeni" />
+				<GARA gara="Racaciuni" />
+				<GARA gara="Faraoani" />
+				<GARA gara="Bacau" />
+				<GARA gara="Galbeni" />
+				<GARA gara="Roman" />
+				<GARA gara="Sabaoani" />
+				<GARA gara="Mircesti" />
+				<GARA gara="Pascani" />
 			</STATII>
 		</TREN>
 		<TREN>
@@ -88,9 +88,9 @@
 			<ORA h="17:07" />
 			<MENTIUNI ment="Conform cu planul" />
 			<STATII>
-				<GARA gara="Adjud"/>
-				<GARA gara="Pufesti"/>
-				<GARA gara="Marasesti"/>
+				<GARA gara="Adjud" />
+				<GARA gara="Pufesti" />
+				<GARA gara="Marasesti" />
 			</STATII>
 		</TREN>
 		<TREN>
@@ -99,15 +99,15 @@
 			<ORA h="19:42" />
 			<MENTIUNI ment="Conform cu planul" />
 			<STATII>
-				<GARA gara="Orbeni"/>
-				<GARA gara="Racaciuni"/>
-				<GARA gara="Faraoani"/>
-				<GARA gara="Bacau"/>
-				<GARA gara="Galbeni"/>
-				<GARA gara="Roman"/>
-				<GARA gara="Sabaoani"/>
-				<GARA gara="Mircesti"/>
-				<GARA gara="Pascani"/>
+				<GARA gara="Orbeni" />
+				<GARA gara="Racaciuni" />
+				<GARA gara="Faraoani" />
+				<GARA gara="Bacau" />
+				<GARA gara="Galbeni" />
+				<GARA gara="Roman" />
+				<GARA gara="Sabaoani" />
+				<GARA gara="Mircesti" />
+				<GARA gara="Pascani" />
 			</STATII>
 		</TREN>
 		<TREN>
@@ -116,9 +116,9 @@
 			<ORA h="21:23" />
 			<MENTIUNI ment="Conform cu planul" />
 			<STATII>
-				<GARA gara="Adjud"/>
-				<GARA gara="Pufesti"/>
-				<GARA gara="Marasesti"/>
+				<GARA gara="Adjud" />
+				<GARA gara="Pufesti" />
+				<GARA gara="Marasesti" />
 			</STATII>
 		</TREN>
 	</PLECARI>
@@ -129,9 +129,9 @@
 			<ORA h="05:33" />
 			<MENTIUNI ment="Conform cu planul" />
 			<STATII>
-				<GARA gara="Marasesti"/>
-				<GARA gara="Pufesti"/>
-				<GARA gara="Adjud"/>
+				<GARA gara="Marasesti" />
+				<GARA gara="Pufesti" />
+				<GARA gara="Adjud" />
 			</STATII>
 		</TREN>
 		<TREN>
@@ -140,15 +140,15 @@
 			<ORA h="07:29" />
 			<MENTIUNI ment="Conform cu planul" />
 			<STATII>
-				<GARA gara="Pascani"/>
-				<GARA gara="Mircesti"/>
-				<GARA gara="Sabaoani"/>
-				<GARA gara="Roman"/>
-				<GARA gara="Galbeni"/>
-				<GARA gara="Bacau"/>
-				<GARA gara="Faraoani"/>
-				<GARA gara="Racaciuni"/>
-				<GARA gara="Orbeni"/>
+				<GARA gara="Pascani" />
+				<GARA gara="Mircesti" />
+				<GARA gara="Sabaoani" />
+				<GARA gara="Roman" />
+				<GARA gara="Galbeni" />
+				<GARA gara="Bacau" />
+				<GARA gara="Faraoani" />
+				<GARA gara="Racaciuni" />
+				<GARA gara="Orbeni" />
 			</STATII>
 		</TREN>
 		<TREN>
@@ -157,7 +157,7 @@
 			<ORA h="08:34" />
 			<MENTIUNI ment="Conform cu planul" />
 			<STATII>
-				<GARA gara="Adjud"/>
+				<GARA gara="Adjud" />
 			</STATII>
 		</TREN>
 		<TREN>
@@ -166,10 +166,10 @@
 			<ORA h="10:35" />
 			<MENTIUNI ment="Conform cu planul" />
 			<STATII>
-				<GARA gara="Bacau"/>
-				<GARA gara="Faraoani"/>
-				<GARA gara="Racaciuni"/>
-				<GARA gara="Orbeni"/>
+				<GARA gara="Bacau" />
+				<GARA gara="Faraoani" />
+				<GARA gara="Racaciuni" />
+				<GARA gara="Orbeni" />
 			</STATII>
 		</TREN>
 		<TREN>
@@ -178,19 +178,19 @@
 			<ORA h="14:22" />
 			<MENTIUNI ment="Conform cu planul" />
 			<STATII>
-				<GARA gara="Bacau"/>
-				<GARA gara="Faraoani"/>
-				<GARA gara="Racaciuni"/>
-				<GARA gara="Orbeni"/>
+				<GARA gara="Bacau" />
+				<GARA gara="Faraoani" />
+				<GARA gara="Racaciuni" />
+				<GARA gara="Orbeni" />
 			</STATII>
 		</TREN>
 		<TREN>
 			<NUMAR nr="5413" />
 			<DESTINATIE dest="Adjud" />
 			<ORA h="15:23" />
-			<MENTIUNI ment="Intarziere: 3 minute." />
+			<MENTIUNI ment="Conform cu planul" />
 			<STATII>
-				<GARA gara="Adjud"/>
+				<GARA gara="Adjud" />
 			</STATII>
 		</TREN>
 		<TREN>
@@ -199,15 +199,15 @@
 			<ORA h="17:06" />
 			<MENTIUNI ment="Conform cu planul" />
 			<STATII>
-				<GARA gara="Pascani"/>
-				<GARA gara="Mircesti"/>
-				<GARA gara="Sabaoani"/>
-				<GARA gara="Roman"/>
-				<GARA gara="Galbeni"/>
-				<GARA gara="Bacau"/>
-				<GARA gara="Faraoani"/>
-				<GARA gara="Racaciuni"/>
-				<GARA gara="Orbeni"/>
+				<GARA gara="Pascani" />
+				<GARA gara="Mircesti" />
+				<GARA gara="Sabaoani" />
+				<GARA gara="Roman" />
+				<GARA gara="Galbeni" />
+				<GARA gara="Bacau" />
+				<GARA gara="Faraoani" />
+				<GARA gara="Racaciuni" />
+				<GARA gara="Orbeni" />
 			</STATII>
 		</TREN>
 		<TREN>
@@ -216,9 +216,9 @@
 			<ORA h="19:41" />
 			<MENTIUNI ment="Conform cu planul" />
 			<STATII>
-				<GARA gara="Marasesti"/>
-				<GARA gara="Pufesti"/>
-				<GARA gara="Adjud"/>
+				<GARA gara="Marasesti" />
+				<GARA gara="Pufesti" />
+				<GARA gara="Adjud" />
 			</STATII>
 		</TREN>
 		<TREN>
@@ -227,15 +227,15 @@
 			<ORA h="21:22" />
 			<MENTIUNI ment="Conform cu planul" />
 			<STATII>
-				<GARA gara="Pascani"/>
-				<GARA gara="Mircesti"/>
-				<GARA gara="Sabaoani"/>
-				<GARA gara="Roman"/>
-				<GARA gara="Galbeni"/>
-				<GARA gara="Bacau"/>
-				<GARA gara="Faraoani"/>
-				<GARA gara="Racaciuni"/>
-				<GARA gara="Orbeni"/>
+				<GARA gara="Pascani" />
+				<GARA gara="Mircesti" />
+				<GARA gara="Sabaoani" />
+				<GARA gara="Roman" />
+				<GARA gara="Galbeni" />
+				<GARA gara="Bacau" />
+				<GARA gara="Faraoani" />
+				<GARA gara="Racaciuni" />
+				<GARA gara="Orbeni" />
 			</STATII>
 		</TREN>
 	</SOSIRI>
