@@ -50,7 +50,7 @@ int main()
         bzero(mesaj_primit, 8192);
 
         cout<<"Introduceti comanda: ";
-        cin>>stocare_mesaj_client;
+        cin.getline(stocare_mesaj_client, 60);
         cout<<endl;
 
         lungime_comanda=strlen(stocare_mesaj_client);
@@ -86,7 +86,7 @@ int main()
                 bzero(stocare_mesaj_client, sizeof(stocare_mesaj_client));//resetez pentru a stoca alte date solicitate de server
 
                 cout<<mesaj_primit; //afisez mesajul trimis de server
-                cin>>stocare_mesaj_client; //furnizez informatia ceruta
+                cin.getline(stocare_mesaj_client, 60); //furnizez informatia ceruta
                 cout<<endl;
 
                 bzero(mesaj_primit, sizeof(mesaj_primit)); //resetez pentru a stoca mai tarziu ce mi-a transmis serverul
@@ -96,7 +96,7 @@ int main()
                 if(trimite_lungime_mesaj_1<=0)
                 {
                     perror("Eroare la transmiterea lungimii mesajului in while 2 \n");
-                    return errno;
+                    return errno;cout<<stocare_mesaj_client<<endl;
                 }
                 //din nou trimit lungimea
 
