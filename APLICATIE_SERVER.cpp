@@ -34,12 +34,14 @@ void resetare_baza_de_date()
     for(pugi::xml_node nod = tabela.child("TABELA").child("PLECARI").first_child(); nod; nod = nod.next_sibling())
     {
         char reset[] = "Conform cu planul";
+        nod.child("MENTIUNI").attribute("min").set_value("0");
         nod.child("MENTIUNI").attribute("ment").set_value(reset);
     }
     for(pugi::xml_node nod = tabela.child("TABELA").child("SOSIRI").first_child(); nod; nod = nod.next_sibling())
     {
         char reset[] = "Conform cu planul";
         nod.child("MENTIUNI").attribute("ment").set_value(reset);
+        nod.child("MENTIUNI").attribute("min").set_value("0");
     }
     tabela.save_file("Planificare_tren.xml");
 }
@@ -112,7 +114,6 @@ void Sistemul_Central(void *arg)
     char mesaj_primit[256];
     char mesaj_trimis[8196];
     int comunicare_client_server=1;
-    printf("hello\n");
     while(comunicare_client_server == 1)
     {
         bzero(&terminat_comanda, sizeof(int));
@@ -167,7 +168,6 @@ void Sistemul_Central(void *arg)
             char rezultat_parsare[8196];
             bzero(rezultat_parsare, 8196);
             deplasari_curente(rezultat_parsare, 1);
-            cout<<rezultat_parsare;
             strcpy(mesaj_trimis, rezultat_parsare);
             lungime_msj_trimis =strlen(mesaj_trimis);
             int trimitere_lungime_msj_trimis = write(client, &lungime_msj_trimis, sizeof(int));
@@ -197,7 +197,6 @@ void Sistemul_Central(void *arg)
             char rezultat_parsare[8196];
             bzero(rezultat_parsare, 8196);
             deplasari_curente(rezultat_parsare, 0);
-            cout<<rezultat_parsare;
             strcpy(mesaj_trimis, rezultat_parsare);
             lungime_msj_trimis =strlen(mesaj_trimis);
             int trimitere_lungime_msj_trimis = write(client, &lungime_msj_trimis, sizeof(int));
@@ -542,6 +541,7 @@ void Sistemul_Central(void *arg)
                 strcpy(minute, mesaj_primit);
                 pthread_mutex_lock(&MUTEX);
                 int modification = modificare_planificare(nr_tren, tip_modificare, minute);
+                pthread_mutex_unlock(&MUTEX);
                 if(modification == -1)//nr tren gresit/neexistent
                 {
                     strcpy(mesaj_trimis, "Nu exista tren cu acest numar.\n");
@@ -614,6 +614,54 @@ void Sistemul_Central(void *arg)
                         break;
                     }
                 }
+                else if(modification == -5)//tren deja plecat
+                {
+                    strcpy(mesaj_trimis, "Tren deja plecat.\n");
+                    lungime_msj_trimis = strlen(mesaj_trimis);
+                    trimitere_lungime_msj_trimis = write(client, &lungime_msj_trimis, sizeof(int));
+                    if(trimitere_lungime_msj_trimis==-1)
+                    {
+                        perror("EROARE la scriere\n");
+                        break;
+                    }
+                    trimitere_msj_trimis = write(client, mesaj_trimis, strlen(mesaj_trimis));
+                    if(trimitere_msj_trimis==-1)
+                    {
+                        perror("EROARE la scriere mesaj\n");
+                        break;
+                    }
+                    terminat_comanda = 1;
+                    finish_comanda = write(client, &terminat_comanda, sizeof(terminat_comanda));
+                    if(finish_comanda==-1)
+                    {
+                        perror("EROARE la scriere mesaj\n");
+                        break;
+                    }
+                }
+                else if(modification == -6)//trenul deja a sosit
+                {
+                    strcpy(mesaj_trimis, "Tren deja sosit.\n");
+                    lungime_msj_trimis = strlen(mesaj_trimis);
+                    trimitere_lungime_msj_trimis = write(client, &lungime_msj_trimis, sizeof(int));
+                    if(trimitere_lungime_msj_trimis==-1)
+                    {
+                        perror("EROARE la scriere\n");
+                        break;
+                    }
+                    trimitere_msj_trimis = write(client, mesaj_trimis, strlen(mesaj_trimis));
+                    if(trimitere_msj_trimis==-1)
+                    {
+                        perror("EROARE la scriere mesaj\n");
+                        break;
+                    }
+                    terminat_comanda = 1;
+                    finish_comanda = write(client, &terminat_comanda, sizeof(terminat_comanda));
+                    if(finish_comanda==-1)
+                    {
+                        perror("EROARE la scriere mesaj\n");
+                        break;
+                    }
+                }
                 else//reusit
                 {
                     strcpy(mesaj_trimis, "Modificare reusita.\n");
@@ -639,7 +687,6 @@ void Sistemul_Central(void *arg)
                     }
                 }
             }
-            pthread_mutex_unlock(&MUTEX);
         }
         else if(strcmp(mesaj_primit, "end_connex")==0)
         {
@@ -864,7 +911,6 @@ void deplasari_curente(char* locatie, int location)
     time(&ceas);
     information = localtime(&ceas);
     strftime(ora_exacta, 8, "%H:%M", information);
-    cout<<ora_exacta<<endl;
     information->tm_hour=(information->tm_hour+1)%24;
     strftime(ora_viitoare, 8, "%H:%M", information);
     pugi::xml_document tabela;
@@ -1218,6 +1264,12 @@ int check_parola(char* parola)
 int modificare_planificare(char* nr_tren, char* tip_modificare, char* minute)
 {
     int gasit=0;
+    time_t ceas;
+    struct tm* information;
+    char ora_exacta[8];
+    time(&ceas);
+    information = localtime(&ceas);
+    strftime(ora_exacta, 8, "%H:%M", information);
     pugi::xml_document tabela;
     pugi::xml_parse_result actual = tabela.load_file("Planificare_tren.xml");
     if(strcmp(tip_modificare, "INT")==0)//se solicita intarzierea sosirii unui tren
@@ -1228,28 +1280,106 @@ int modificare_planificare(char* nr_tren, char* tip_modificare, char* minute)
             {
                 if(strcmp(nr_tren, tren.child("NUMAR").attribute("nr").value())==0)
                 {
-                    gasit++;
-                    char nou[100];
-                    strcpy(nou, "Intarziere: ");
-                    strcat(nou, minute);
-                    strcat(nou, " minute.");
-                    tren.child("MENTIUNI").attribute("ment").set_value(nou);
-                    tabela.save_file("Planificare_tren.xml");
-                    break;
+                    char ora[3];
+                    char minut[3];
+                    char ora_tabela[100];
+                    strcpy(ora_tabela, tren.child("ORA").attribute("h").value());
+                    char* haz;
+                    haz=strtok(ora_tabela, ":");
+
+                    strcpy(ora, haz);
+                    haz=strtok(NULL, ":");
+                    
+                    strcpy(minut, haz);
+                    int hour = atoi(ora);
+                    int hmin = atoi(minut);
+                    char est[5];
+                    strcpy(est, tren.child("MENTIUNI").attribute("min").value());
+                    int estim = atoi(est);
+                    time_t ceas_1;
+                    struct tm* information_1;
+                    char ora_necesara[8];
+                    time(&ceas_1);
+                    information_1 = localtime(&ceas_1);
+                    information_1->tm_hour = hour;
+                    information_1->tm_min = hmin + estim;
+                    if(information_1->tm_min>=60)
+                    {
+                        information_1->tm_hour = (information_1->tm_hour+1)%24;
+                        information_1->tm_min = information_1->tm_min%60;
+                    }
+                    if(information_1->tm_min<0)
+                    {
+                        information_1->tm_hour = (information_1->tm_hour+23)%24;
+                        information_1->tm_min = information_1->tm_min+60;
+                    }
+                    strftime(ora_necesara, 8, "%H:%M", information_1);
+                    if(strcmp(ora_exacta, ora_necesara)<0)
+                    {
+                        gasit++;
+                        char nou[100];
+                        strcpy(nou, "Intarziere: ");
+                        strcat(nou, minute);
+                        strcat(nou, " minute.");
+                        tren.child("MENTIUNI").attribute("ment").set_value(nou);
+                        tren.child("MENTIUNI").attribute("min").set_value(minute);
+                        tabela.save_file("Planificare_tren.xml");
+                        break;
+                    }
+                    else
+                    {
+                        return -5; //este plecat
+                    }
                 }
             }
             for(pugi::xml_node tren = tabela.child("TABELA").child("SOSIRI").first_child(); tren; tren = tren.next_sibling())
             {
                 if(strcmp(nr_tren, tren.child("NUMAR").attribute("nr").value())==0)
                 {
-                    gasit++;
-                    char nou[100];
-                    strcpy(nou, "Intarziere: ");
-                    strcat(nou, minute);
-                    strcat(nou, " minute.");
-                    tren.child("MENTIUNI").attribute("ment").set_value(nou);
-                    tabela.save_file("Planificare_tren.xml");
-                    break;
+                    char ora[3];
+                    char minut[3];
+                    char ora_tabela[100];
+                    strcpy(ora_tabela, tren.child("ORA").attribute("h").value());
+                    char* haz;
+                    haz=strtok(ora_tabela, ":");
+                    strcpy(ora, haz);
+                    haz=strtok(NULL, ":");
+                    strcpy(minut, haz);
+                    int hour = atoi(ora);
+                    int hmin = atoi(minut);
+                    char est[5];
+                    strcpy(est, tren.child("MENTIUNI").attribute("min").value());
+                    int estim = atoi(est);
+                    time_t ceas_1;
+                    struct tm* information_1;
+                    char ora_necesara[8];
+                    time(&ceas_1);
+                    information_1 = localtime(&ceas_1);
+                    information_1->tm_hour = hour;
+                    information_1->tm_min = hmin + estim;
+                    if(information_1->tm_min>=60)
+                    {
+                        information_1->tm_hour = (information_1->tm_hour+1)%24;
+                        information_1->tm_min = information_1->tm_min%60;
+                    }
+                    if(information_1->tm_min<0)
+                    {
+                        information_1->tm_hour = (information_1->tm_hour+23)%24;
+                        information_1->tm_min = information_1->tm_min+60;
+                    }
+                    strftime(ora_necesara, 8, "%H:%M", information_1);
+                    if(strcmp(ora_exacta, ora_necesara)<0)
+                    {
+                        gasit++;
+                        char nou[100];
+                        strcpy(nou, "Intarziere: ");
+                        strcat(nou, minute);
+                        strcat(nou, " minute.");
+                        tren.child("MENTIUNI").attribute("ment").set_value(nou);
+                        tren.child("MENTIUNI").attribute("min").set_value(minute);
+                        tabela.save_file("Planificare_tren.xml");
+                        break;
+                    }
                 }
             }
             if(gasit > 0)
@@ -1270,30 +1400,113 @@ int modificare_planificare(char* nr_tren, char* tip_modificare, char* minute)
     {
         if(strcmp(minute, "0")>0 || strcmp(minute, "1440")<=0)
         {
-            for(pugi::xml_node tren = tabela.child("TABELA").child("PLECARI").first_child(); tren; tren = tren.next_sibling())
-            {
-                if(strcmp(nr_tren, tren.child("NUMAR").attribute("nr").value())==0)
-                {
-                    gasit++;
-                    char nou[100];
-                    strcpy(nou, "Conform cu planul");
-                    tren.child("MENTIUNI").attribute("ment").set_value(nou);
-                    tabela.save_file("Planificare_tren.xml");
-                    break;
-                }
-            }
             for(pugi::xml_node tren = tabela.child("TABELA").child("SOSIRI").first_child(); tren; tren = tren.next_sibling())
             {
                 if(strcmp(nr_tren, tren.child("NUMAR").attribute("nr").value())==0)
                 {
-                    gasit++;
-                    char nou[100];
-                    strcpy(nou, "Mai devreme cu ");
-                    strcat(nou, minute);
-                    strcat(nou, " minute.");
-                    tren.child("MENTIUNI").attribute("ment").set_value(nou);
-                    tabela.save_file("Planificare_tren.xml");
-                    break;
+                    char ora[3];
+                    char minut[3];
+                    char ora_tabela[100];
+                    strcpy(ora_tabela, tren.child("ORA").attribute("h").value());
+                    char* haz;
+                    haz=strtok(ora_tabela, ":");
+                    strcpy(ora, haz);
+                    haz=strtok(NULL, ":");
+                    strcpy(minut, haz);
+                    int hour = atoi(ora);
+                    int hmin = atoi(minut);
+                    char est[5];
+                    strcpy(est, tren.child("MENTIUNI").attribute("min").value());
+                    int estim = atoi(est);
+                    time_t ceas_1;
+                    struct tm* information_1;
+                    char ora_necesara[8];
+                    time(&ceas_1);
+                    information_1 = localtime(&ceas_1);
+                    information_1->tm_hour = hour;
+                    information_1->tm_min = hmin + estim;
+                    if(information_1->tm_min>=60)
+                    {
+                        information_1->tm_hour = (information_1->tm_hour+1)%24;
+                        information_1->tm_min = information_1->tm_min%60;
+                    }
+                    if(information_1->tm_min<0)
+                    {
+                        information_1->tm_hour = (information_1->tm_hour+23)%24;
+                        information_1->tm_min = information_1->tm_min+60;
+                    }
+                    strftime(ora_necesara, 8, "%H:%M", information_1);
+                    if(strcmp(ora_exacta, ora_necesara)<0)
+                    {
+                        gasit++;
+                        char nou[100];
+                        strcpy(nou, "Mai devreme cu ");
+                        strcat(nou, minute);
+                        strcat(nou, " minute.");
+                        char decam[5];
+                        strcpy(decam, "-");
+                        strcat(decam, minute);
+                        tren.child("MENTIUNI").attribute("ment").set_value(nou);
+                        tren.child("MENTIUNI").attribute("min").set_value(decam);
+                        tabela.save_file("Planificare_tren.xml");
+                        break;
+                    }
+                    else
+                    {
+                        return -6; //deja sosit
+                    }
+                }
+            }
+            for(pugi::xml_node tren = tabela.child("TABELA").child("PLECARI").first_child(); tren; tren = tren.next_sibling())
+            {
+                if(strcmp(nr_tren, tren.child("NUMAR").attribute("nr").value())==0)
+                {
+                    char ora[3];
+                    char minut[3];
+                    char ora_tabela[100];
+                    strcpy(ora_tabela, tren.child("ORA").attribute("h").value());
+                    char* haz;
+                    haz=strtok(ora_tabela, ":");
+                    strcpy(ora, haz);
+                    haz=strtok(NULL, ":");
+                    strcpy(minut, haz);
+                    int hour = atoi(ora);
+                    int hmin = atoi(minut);
+                    char est[5];
+                    strcpy(est, tren.child("MENTIUNI").attribute("min").value());
+                    int estim = atoi(est);
+                    time_t ceas_1;
+                    struct tm* information_1;
+                    char ora_necesara[8];
+                    time(&ceas_1);
+                    information_1 = localtime(&ceas_1);
+                    information_1->tm_hour = hour;
+                    information_1->tm_min = hmin + estim;
+                    if(information_1->tm_min>=60)
+                    {
+                        information_1->tm_hour = (information_1->tm_hour+1)%24;
+                        information_1->tm_min = information_1->tm_min%60;
+                    }
+                    if(information_1->tm_min<0)
+                    {
+                        information_1->tm_hour = (information_1->tm_hour+23)%24;
+                        information_1->tm_min = information_1->tm_min+60;
+                    }
+                    strftime(ora_necesara, 8, "%H:%M", information_1);
+                    if(strcmp(ora_exacta, ora_necesara)<0)
+                    {
+                        gasit++;
+                        char nou[100];
+                        strcpy(nou, "Conform cu planul");
+                        tren.child("MENTIUNI").attribute("ment").set_value(nou);
+                        tren.child("MENTIUNI").attribute("min").set_value("0");
+                        tabela.save_file("Planificare_tren.xml");
+                        break;
+                    }
+                    else
+                    {
+                        return -5;
+                    }
                 }
             }
             if(gasit > 0)
@@ -1316,24 +1529,100 @@ int modificare_planificare(char* nr_tren, char* tip_modificare, char* minute)
         {
             if(strcmp(nr_tren, tren.child("NUMAR").attribute("nr").value())==0)
             {
-                gasit++;
-                char nou[100];
-                strcpy(nou, "Conform cu planul");
-                tren.child("MENTIUNI").attribute("ment").set_value(nou);
-                tabela.save_file("Planificare_tren.xml");
-                break;
+                char ora[3];
+                char minut[3];
+                char ora_tabela[100];
+                strcpy(ora_tabela, tren.child("ORA").attribute("h").value());
+                char* haz;
+                haz=strtok(ora_tabela, ":");
+                strcpy(ora, haz);
+                haz=strtok(NULL, ":");
+                strcpy(minut, haz);
+                int hour = atoi(ora);
+                int hmin = atoi(minut);
+                char est[5];
+                strcpy(est, tren.child("MENTIUNI").attribute("min").value());
+                int estim = atoi(est);
+                time_t ceas_1;
+                struct tm* information_1;
+                char ora_necesara[8];
+                time(&ceas_1);
+                information_1 = localtime(&ceas_1);
+                information_1->tm_hour = hour;
+                information_1->tm_min = hmin + estim;
+                if(information_1->tm_min>=60)
+                {
+                    information_1->tm_hour = (information_1->tm_hour+1)%24;
+                    information_1->tm_min = information_1->tm_min%60;
+                }
+                if(information_1->tm_min<0)
+                {
+                    information_1->tm_hour = (information_1->tm_hour+23)%24;
+                    information_1->tm_min = information_1->tm_min+60;
+                }
+                strftime(ora_necesara, 8, "%H:%M", information_1);
+                if(strcmp(ora_exacta, ora_necesara)<0)
+                {
+                    gasit++;
+                    char nou[100];
+                    strcpy(nou, "Conform cu planul");
+                    tren.child("MENTIUNI").attribute("ment").set_value(nou);
+                    tren.child("MENTIUNI").attribute("min").set_value("0");
+                    tabela.save_file("Planificare_tren.xml");
+                    break;
+                }
+                else
+                {
+                    return -5;
+                }
             }
         }
         for(pugi::xml_node tren = tabela.child("TABELA").child("SOSIRI").first_child(); tren; tren = tren.next_sibling())
         {
             if(strcmp(nr_tren, tren.child("NUMAR").attribute("nr").value())==0)
             {
-                gasit++;
-                char nou[100];
-                strcpy(nou, "Conform cu planul");
-                tren.child("MENTIUNI").attribute("ment").set_value(nou);
-                tabela.save_file("Planificare_tren.xml");
-                break;
+                char ora[3];
+                char minut[3];
+                char ora_tabela[100];
+                strcpy(ora_tabela, tren.child("ORA").attribute("h").value());
+                char* haz;
+                haz=strtok(ora_tabela, ":");
+                strcpy(ora, haz);
+                haz=strtok(NULL, ":");
+                strcpy(minut, haz);
+                int hour = atoi(ora);
+                int hmin = atoi(minut);
+                char est[5];
+                strcpy(est, tren.child("MENTIUNI").attribute("min").value());
+                int estim = atoi(est);
+                time_t ceas_1;
+                struct tm* information_1;
+                char ora_necesara[8];
+                time(&ceas_1);
+                information_1 = localtime(&ceas_1);
+                information_1->tm_hour = hour;
+                information_1->tm_min = hmin + estim;
+                if(information_1->tm_min>=60)
+                {
+                    information_1->tm_hour = (information_1->tm_hour+1)%24;
+                    information_1->tm_min = information_1->tm_min%60;
+                }
+                if(information_1->tm_min<0)
+                {
+                    information_1->tm_hour = (information_1->tm_hour+23)%24;
+                    information_1->tm_min = information_1->tm_min+60;
+                }
+                strftime(ora_necesara, 8, "%H:%M", information_1);
+                if(strcmp(ora_exacta, ora_necesara)<0)
+                {
+                    gasit++;
+                    char nou[100];
+                    strcpy(nou, "Conform cu planul");
+                    tren.child("MENTIUNI").attribute("ment").set_value(nou);
+                    tren.child("MENTIUNI").attribute("min").set_value("0");
+                    tabela.save_file("Planificare_tren.xml");
+                    break;
+                }
             }
         }
         if(gasit > 0)
