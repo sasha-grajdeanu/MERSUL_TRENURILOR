@@ -60,7 +60,7 @@
 			<NUMAR nr="5414" />
 			<DESTINATIE dest="Adjud" />
 			<ORA h="14:23" />
-			<MENTIUNI ment="Conform cu planul" min="0" />
+			<MENTIUNI ment="Intarziere: 20 minute." min="20" />
 			<STATII>
 				<GARA gara="Adjud" />
 			</STATII>
@@ -193,7 +193,7 @@
 			<NUMAR nr="5414" />
 			<DESTINATIE dest="Bacau" />
 			<ORA h="14:22" />
-			<MENTIUNI ment="Conform cu planul" min="0" />
+			<MENTIUNI ment="Intarziere: 20 minute." min="20" />
 			<STATII>
 				<GARA gara="Bacau" />
 				<GARA gara="Faraoani" />
@@ -257,10 +257,12 @@
 		</TREN>
 		<TREN>
 			<NUMAR nr="5767" />
-			<DESTINATIE dest="Marasesti" />
+			<DESTINATIE dest="Galati" />
 			<ORA h="22:08" />
 			<MENTIUNI ment="Conform cu planul" min="0" />
 			<STATII>
+				<GARA gara="Galati" />
+				<GARA gara="Tecuci" />
 				<GARA gara="Marasesti" />
 				<GARA gara="Pufesti" />
 				<GARA gara="Adjud" />

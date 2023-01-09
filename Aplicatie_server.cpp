@@ -955,7 +955,39 @@ void deplasari_curente(char* locatie, int location)
         strcat(rezultat, "\n");
         for(pugi::xml_node tren = tabela.child("TABELA").child("PLECARI").first_child(); tren; tren = tren.next_sibling())
         {
-            if(strcmp(tren.child("ORA").attribute("h").value(), ora_exacta)>=0 && strcmp(tren.child("ORA").attribute("h").value(), ora_viitoare)<=0)
+            char ora[3];
+            char minut[3];
+            char ora_tabela[100];
+            strcpy(ora_tabela, tren.child("ORA").attribute("h").value());
+            char* haz;
+            haz=strtok(ora_tabela, ":");
+            strcpy(ora, haz);
+            haz=strtok(NULL, ":");
+            strcpy(minut, haz);
+            int hour = atoi(ora);
+            int hmin = atoi(minut);
+            char est[5];
+            strcpy(est, tren.child("MENTIUNI").attribute("min").value());
+            int estim = atoi(est);
+            time_t ceas_1;
+            struct tm* information_1;
+            char ora_necesara[8];
+            time(&ceas_1);
+            information_1 = localtime(&ceas_1);
+            information_1->tm_hour = hour;
+            information_1->tm_min = hmin + estim;
+            if(information_1->tm_min>=60)
+            {
+                information_1->tm_hour = (information_1->tm_hour+1)%24;
+                information_1->tm_min = information_1->tm_min%60;
+            }
+            if(information_1->tm_min<0)
+            {
+                information_1->tm_hour = (information_1->tm_hour+23)%24;
+                information_1->tm_min = information_1->tm_min+60;
+            }
+            strftime(ora_necesara, 8, "%H:%M", information_1);
+            if(strcmp(ora_necesara, ora_exacta)>=0 && strcmp(ora_necesara, ora_viitoare)<=0)
             {
                 char numar[10];
                 strcpy(numar, tren.child("NUMAR").attribute("nr").value());
@@ -1034,7 +1066,39 @@ void deplasari_curente(char* locatie, int location)
         strcat(rezultat, "\n");
         for(pugi::xml_node tren = tabela.child("TABELA").child("SOSIRI").first_child(); tren; tren = tren.next_sibling())
         {
-            if(strcmp(tren.child("ORA").attribute("h").value(), ora_exacta)>=0 && strcmp(tren.child("ORA").attribute("h").value(), ora_viitoare)<=0)
+            char ora[3];
+            char minut[3];
+            char ora_tabela[100];
+            strcpy(ora_tabela, tren.child("ORA").attribute("h").value());
+            char* haz;
+            haz=strtok(ora_tabela, ":");
+            strcpy(ora, haz);
+            haz=strtok(NULL, ":");
+            strcpy(minut, haz);
+            int hour = atoi(ora);
+            int hmin = atoi(minut);
+            char est[5];
+            strcpy(est, tren.child("MENTIUNI").attribute("min").value());
+            int estim = atoi(est);
+            time_t ceas_1;
+            struct tm* information_1;
+            char ora_necesara[8];
+            time(&ceas_1);
+            information_1 = localtime(&ceas_1);
+            information_1->tm_hour = hour;
+            information_1->tm_min = hmin + estim;
+            if(information_1->tm_min>=60)
+            {
+                information_1->tm_hour = (information_1->tm_hour+1)%24;
+                information_1->tm_min = information_1->tm_min%60;
+            }
+            if(information_1->tm_min<0)
+            {
+                information_1->tm_hour = (information_1->tm_hour+23)%24;
+                information_1->tm_min = information_1->tm_min+60;
+            }
+            strftime(ora_necesara, 8, "%H:%M", information_1);
+            if(strcmp(ora_necesara, ora_exacta)>=0 && strcmp(ora_necesara, ora_viitoare)<=0)
             {
                 char numar[10];
                 strcpy(numar, tren.child("NUMAR").attribute("nr").value());
@@ -1280,6 +1344,7 @@ int modificare_planificare(char* nr_tren, char* tip_modificare, char* minute)
             {
                 if(strcmp(nr_tren, tren.child("NUMAR").attribute("nr").value())==0)
                 {
+                    gasit++;
                     char ora[3];
                     char minut[3];
                     char ora_tabela[100];
@@ -1316,7 +1381,6 @@ int modificare_planificare(char* nr_tren, char* tip_modificare, char* minute)
                     strftime(ora_necesara, 8, "%H:%M", information_1);
                     if(strcmp(ora_exacta, ora_necesara)<0)
                     {
-                        gasit++;
                         char nou[100];
                         strcpy(nou, "Intarziere: ");
                         strcat(nou, minute);
@@ -1336,6 +1400,7 @@ int modificare_planificare(char* nr_tren, char* tip_modificare, char* minute)
             {
                 if(strcmp(nr_tren, tren.child("NUMAR").attribute("nr").value())==0)
                 {
+                    gasit++;
                     char ora[3];
                     char minut[3];
                     char ora_tabela[100];
@@ -1370,7 +1435,6 @@ int modificare_planificare(char* nr_tren, char* tip_modificare, char* minute)
                     strftime(ora_necesara, 8, "%H:%M", information_1);
                     if(strcmp(ora_exacta, ora_necesara)<0)
                     {
-                        gasit++;
                         char nou[100];
                         strcpy(nou, "Intarziere: ");
                         strcat(nou, minute);
@@ -1379,6 +1443,10 @@ int modificare_planificare(char* nr_tren, char* tip_modificare, char* minute)
                         tren.child("MENTIUNI").attribute("min").set_value(minute);
                         tabela.save_file("Planificare_tren.xml");
                         break;
+                    }
+                    else
+                    {
+                        return -6;
                     }
                 }
             }
@@ -1404,6 +1472,7 @@ int modificare_planificare(char* nr_tren, char* tip_modificare, char* minute)
             {
                 if(strcmp(nr_tren, tren.child("NUMAR").attribute("nr").value())==0)
                 {
+                    gasit++;
                     char ora[3];
                     char minut[3];
                     char ora_tabela[100];
@@ -1438,7 +1507,6 @@ int modificare_planificare(char* nr_tren, char* tip_modificare, char* minute)
                     strftime(ora_necesara, 8, "%H:%M", information_1);
                     if(strcmp(ora_exacta, ora_necesara)<0)
                     {
-                        gasit++;
                         char nou[100];
                         strcpy(nou, "Mai devreme cu ");
                         strcat(nou, minute);
@@ -1461,6 +1529,7 @@ int modificare_planificare(char* nr_tren, char* tip_modificare, char* minute)
             {
                 if(strcmp(nr_tren, tren.child("NUMAR").attribute("nr").value())==0)
                 {
+                    gasit++;
                     char ora[3];
                     char minut[3];
                     char ora_tabela[100];
@@ -1495,7 +1564,6 @@ int modificare_planificare(char* nr_tren, char* tip_modificare, char* minute)
                     strftime(ora_necesara, 8, "%H:%M", information_1);
                     if(strcmp(ora_exacta, ora_necesara)<0)
                     {
-                        gasit++;
                         char nou[100];
                         strcpy(nou, "Conform cu planul");
                         tren.child("MENTIUNI").attribute("ment").set_value(nou);
@@ -1529,6 +1597,7 @@ int modificare_planificare(char* nr_tren, char* tip_modificare, char* minute)
         {
             if(strcmp(nr_tren, tren.child("NUMAR").attribute("nr").value())==0)
             {
+                gasit++;
                 char ora[3];
                 char minut[3];
                 char ora_tabela[100];
@@ -1563,7 +1632,6 @@ int modificare_planificare(char* nr_tren, char* tip_modificare, char* minute)
                 strftime(ora_necesara, 8, "%H:%M", information_1);
                 if(strcmp(ora_exacta, ora_necesara)<0)
                 {
-                    gasit++;
                     char nou[100];
                     strcpy(nou, "Conform cu planul");
                     tren.child("MENTIUNI").attribute("ment").set_value(nou);
@@ -1581,6 +1649,7 @@ int modificare_planificare(char* nr_tren, char* tip_modificare, char* minute)
         {
             if(strcmp(nr_tren, tren.child("NUMAR").attribute("nr").value())==0)
             {
+                gasit++;
                 char ora[3];
                 char minut[3];
                 char ora_tabela[100];
@@ -1615,7 +1684,6 @@ int modificare_planificare(char* nr_tren, char* tip_modificare, char* minute)
                 strftime(ora_necesara, 8, "%H:%M", information_1);
                 if(strcmp(ora_exacta, ora_necesara)<0)
                 {
-                    gasit++;
                     char nou[100];
                     strcpy(nou, "Conform cu planul");
                     tren.child("MENTIUNI").attribute("ment").set_value(nou);
