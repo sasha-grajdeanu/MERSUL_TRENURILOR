@@ -95,7 +95,7 @@ int main()
         i++;
     }
     return 0;
-;}
+}
 
 static void *tratare (void * arg)
 {
