@@ -60,7 +60,7 @@
 			<NUMAR nr="5414" />
 			<DESTINATIE dest="Adjud" />
 			<ORA h="14:23" />
-			<MENTIUNI ment="Intarziere: 20 minute." min="20" />
+			<MENTIUNI ment="Conform cu planul" min="0" />
 			<STATII>
 				<GARA gara="Adjud" />
 			</STATII>
@@ -193,7 +193,7 @@
 			<NUMAR nr="5414" />
 			<DESTINATIE dest="Bacau" />
 			<ORA h="14:22" />
-			<MENTIUNI ment="Intarziere: 20 minute." min="20" />
+			<MENTIUNI ment="Conform cu planul" min="0" />
 			<STATII>
 				<GARA gara="Bacau" />
 				<GARA gara="Faraoani" />

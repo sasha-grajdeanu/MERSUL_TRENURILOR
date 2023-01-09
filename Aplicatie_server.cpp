@@ -91,7 +91,7 @@ int main()
             continue;
         }
         pthread_create(&MULTIME[i], NULL, &tratare, &clientela);
-        cout<<"thread "<<i<<" creat"<<endl;
+        cout<<"Thread "<<i<<" creat"<<endl;
         i++;
     }
     return 0;
@@ -101,7 +101,7 @@ static void *tratare (void * arg)
 {
     pthread_detach(pthread_self());
     Sistemul_Central((int*)arg);
-    printf("Inchis thread\n");
+    printf("S-a inchis thread-ul\n");
     return NULL;
 };
 
@@ -169,6 +169,7 @@ void Sistemul_Central(void *arg)
             bzero(rezultat_parsare, 8196);
             deplasari_curente(rezultat_parsare, 1);
             strcpy(mesaj_trimis, rezultat_parsare);
+            pthread_mutex_unlock(&MUTEX); 
             lungime_msj_trimis =strlen(mesaj_trimis);
             int trimitere_lungime_msj_trimis = write(client, &lungime_msj_trimis, sizeof(int));
             if(trimitere_lungime_msj_trimis==-1)
@@ -189,7 +190,6 @@ void Sistemul_Central(void *arg)
                 perror("EROARE la scriere mesaj\n");
                 break;
             }
-            pthread_mutex_unlock(&MUTEX); 
         }
         else if(strcmp(mesaj_primit, "sosiri_ultima_ora")==0)
         {
@@ -198,6 +198,7 @@ void Sistemul_Central(void *arg)
             bzero(rezultat_parsare, 8196);
             deplasari_curente(rezultat_parsare, 0);
             strcpy(mesaj_trimis, rezultat_parsare);
+            pthread_mutex_unlock(&MUTEX); 
             lungime_msj_trimis =strlen(mesaj_trimis);
             int trimitere_lungime_msj_trimis = write(client, &lungime_msj_trimis, sizeof(int));
             if(trimitere_lungime_msj_trimis==-1)
@@ -218,7 +219,6 @@ void Sistemul_Central(void *arg)
                 perror("EROARE la scriere mesaj\n");
                 break;
             }
-            pthread_mutex_unlock(&MUTEX); 
         }
         else if(strcmp(mesaj_primit, "plecari_spre")==0)
         {
