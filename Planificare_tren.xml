@@ -257,10 +257,13 @@
 		</TREN>
 		<TREN>
 			<NUMAR nr="5767" />
-			<DESTINATIE dest="Galati" />
+			<DESTINATIE dest="Bucuresti N." />
 			<ORA h="22:08" />
 			<MENTIUNI ment="Conform cu planul" min="0" />
 			<STATII>
+				<GARA gara="Bucuresti N." />
+				<GARA gara="Ploiesti" />
+				<GARA gara="Buzau" />
 				<GARA gara="Galati" />
 				<GARA gara="Tecuci" />
 				<GARA gara="Marasesti" />
