@@ -57,14 +57,14 @@ int main()
         int trimite_lungime_mesaj=write(descriptor_socket, &lungime_comanda, sizeof(int)); 
         //trimit lungimea comenzii pentru ca serverul sa stie cat sa citeasca
 
-        if(trimite_lungime_mesaj<=0)
+        if(trimite_lungime_mesaj==-1)
         {
             perror("Eroare la transmiterea lungimii mesajului \n");
             return errno;
         }
 
         int scriere_1=write(descriptor_socket, stocare_mesaj_client, strlen(stocare_mesaj_client));
-        if(scriere_1<=0)
+        if(scriere_1==-1)
         {
             perror("Eroare la transmiterea comenzii \n");
             return errno;
@@ -93,7 +93,7 @@ int main()
                 
                 lungime_comanda=strlen(stocare_mesaj_client);
                 int trimite_lungime_mesaj_1=write(descriptor_socket, &lungime_comanda, sizeof(int)); 
-                if(trimite_lungime_mesaj_1<=0)
+                if(trimite_lungime_mesaj_1==-1)
                 {
                     perror("Eroare la transmiterea lungimii mesajului in while 2 \n");
                     return errno;cout<<stocare_mesaj_client<<endl;
@@ -101,7 +101,7 @@ int main()
                 //din nou trimit lungimea
 
                 int scriere_2=write(descriptor_socket, stocare_mesaj_client, strlen(stocare_mesaj_client));
-                if(scriere_2<=0)
+                if(scriere_2==-1)
                 {
                     perror("Eroare la transmiterea comenzii in while 2 \n");
                     return errno;
