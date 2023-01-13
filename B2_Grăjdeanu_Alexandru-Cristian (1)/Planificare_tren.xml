@@ -31,7 +31,7 @@
 			<NUMAR nr="5411" />
 			<DESTINATIE dest="Pascani" />
 			<ORA h="08:35" />
-			<MENTIUNI ment="Intarziere: 60 minute." min="60" />
+			<MENTIUNI ment="Conform cu planul" min="0" />
 			<STATII>
 				<GARA gara="Orbeni" />
 				<GARA gara="Racaciuni" />
@@ -114,7 +114,7 @@
 			<NUMAR nr="5406" />
 			<DESTINATIE dest="Marasesti" />
 			<ORA h="21:23" />
-			<MENTIUNI ment="Conform cu planul" min="0" />
+			<MENTIUNI ment="Intarziere: 10 minute." min="10" />
 			<STATII>
 				<GARA gara="Adjud" />
 				<GARA gara="Pufesti" />
@@ -172,7 +172,7 @@
 			<NUMAR nr="5411" />
 			<DESTINATIE dest="Adjud" />
 			<ORA h="08:34" />
-			<MENTIUNI ment="Intarziere: 60 minute." min="60" />
+			<MENTIUNI ment="Conform cu planul" min="0" />
 			<STATII>
 				<GARA gara="Adjud" />
 			</STATII>
@@ -242,7 +242,7 @@
 			<NUMAR nr="5406" />
 			<DESTINATIE dest="Pascani" />
 			<ORA h="21:22" />
-			<MENTIUNI ment="Conform cu planul" min="0" />
+			<MENTIUNI ment="Intarziere: 10 minute." min="10" />
 			<STATII>
 				<GARA gara="Pascani" />
 				<GARA gara="Mircesti" />
